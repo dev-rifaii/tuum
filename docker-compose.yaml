@@ -5,6 +5,7 @@ services:
       - "8080:8080"
     environment:
       SPRING_DATASOURCE_URL: "jdbc:postgresql://db:5432/tuum"
+      SPRING_RABBITMQ_HOST: "rabbit"
     depends_on:
       - db
       - rabbit
