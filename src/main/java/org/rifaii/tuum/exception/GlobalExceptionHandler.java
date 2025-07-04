@@ -1,17 +1,13 @@
 package org.rifaii.tuum.exception;
 
 import org.rifaii.tuum.exception.ErrorResponse.Error;
+import org.rifaii.tuum.exception.ErrorResponse.InputFieldError;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-
-import java.time.Instant;
-import java.util.UUID;
-
-import static java.util.Arrays.asList;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -20,38 +16,37 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler
     ResponseEntity<ErrorResponse> general(Exception e) {
-        ErrorResponse errorResponse = errorResponse();
-        log.error("Error ID: {}, with message: {}", errorResponse.errorId(), e.getMessage(), e);
+        ErrorResponse errorResponse = ErrorResponse.forGeneralErrors();
+        log.error("Error ID: {}, with message: {}", errorResponse.getErrorId(), e.getMessage(), e);
         return ResponseEntity.internalServerError()
             .body(errorResponse);
     }
 
     @ExceptionHandler
     ResponseEntity<ErrorResponse> validation(MethodArgumentNotValidException e) {
-        Error[] allFieldErrors = e.getAllErrors()
+        InputFieldError[] allFieldErrors = e.getFieldErrors()
             .stream()
-            .map(error -> new Error(error.getCode(), error.getDefaultMessage()))
-            .toArray(Error[]::new);
+            .map(error -> new InputFieldError(error.getField(), error.getCode(), error.getDefaultMessage()))
+            .toArray(InputFieldError[]::new);
 
-        ErrorResponse errorResponse = errorResponse(allFieldErrors);
-        log.error("Error ID: {}, with message {}", errorResponse.errorId(), e.getMessage(), e);
-        return ResponseEntity.badRequest()
-            .body(errorResponse);
+        ErrorResponse errorResponse = ErrorResponse.forFieldErrors(allFieldErrors);
+        log.error("Error ID: {}, with message {}", errorResponse.getErrorId(), e.getMessage(), e);
+        return ResponseEntity.badRequest().body(errorResponse);
     }
 
     @ExceptionHandler
     ResponseEntity<ErrorResponse> resourceNotFound(ResourceNotFoundException e) {
-        ErrorResponse errorResponse = errorResponse(new Error("RESOURCE_NOT_FOUND", e.getMessage()));
-        log.error("Error ID: {}, with message {}", errorResponse.errorId(), e.getMessage(), e);
+        ErrorResponse errorResponse = ErrorResponse.forGeneralErrors(new Error(e.getCode(), e.getMessage()));
+        log.error("Error ID: {}, with message {}", errorResponse.getErrorId(), e.getMessage(), e);
         return ResponseEntity.status(404)
             .body(errorResponse);
     }
 
-    private ErrorResponse errorResponse(Error... errors) {
-        return new ErrorResponse(
-            Instant.now(),
-            UUID.randomUUID().toString(),
-            asList(errors)
-        );
+    @ExceptionHandler
+    ResponseEntity<ErrorResponse> badRequest(BadRequestException e) {
+        ErrorResponse errorResponse = ErrorResponse.forGeneralErrors(new Error(e.getCode(), e.getMessage()));
+        log.error("Error ID: {}, with message {}", errorResponse.getErrorId(), e.getMessage(), e);
+        return ResponseEntity.badRequest()
+            .body(errorResponse);
     }
 }

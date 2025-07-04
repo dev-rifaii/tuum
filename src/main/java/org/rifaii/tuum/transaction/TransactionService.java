@@ -4,8 +4,8 @@ import org.rifaii.tuum.account.AccountService;
 import org.rifaii.tuum.account.dto.AccountWithBalanceDto;
 import org.rifaii.tuum.account.dto.AccountWithBalanceDto.BalanceDto;
 import org.rifaii.tuum.balance.BalanceService;
+import org.rifaii.tuum.exception.BadRequestException;
 import org.rifaii.tuum.exception.BusinessAssert;
-import org.rifaii.tuum.exception.ResourceNotFoundException;
 import org.rifaii.tuum.transaction.Transaction.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,7 +53,7 @@ public class TransactionService {
             .stream()
             .filter(balance -> currencyCode.equals(balance.getCurrencyCode()))
             .findFirst()
-            .orElseThrow(() -> new ResourceNotFoundException("Currency %s not available on account".formatted(accountId)));
+            .orElseThrow(() -> new BadRequestException("Currency %s not available on account".formatted(currencyCode), "UNSUPPORTED_CURRENCY"));
 
         if (Direction.IN.equals(transaction.getDirection()))
             return;

@@ -13,7 +13,7 @@ import java.math.BigDecimal;
 public record CreateTransactionRequestDto(
     @NotNull Long accountId,
     @NotNull @Positive BigDecimal amount,
-    @ValidCurrency String currency,
+    @ValidCurrency @NotNull String currency,
     @NotNull @EnumValue(Direction.class) String direction,
     @NotBlank String description
 ) {

@@ -36,12 +36,12 @@ public class RabbitConfig {
     }
 
     @Bean
-    public MessageConverter jsonMessageConverter() {
+    MessageConverter jsonMessageConverter() {
         return new Jackson2JsonMessageConverter();
     }
 
     @Bean
-    public RabbitAdmin amqpAdmin(ConnectionFactory connectionFactory) {
+    RabbitAdmin amqpAdmin(ConnectionFactory connectionFactory) {
         return new RabbitAdmin(connectionFactory);
     }
 

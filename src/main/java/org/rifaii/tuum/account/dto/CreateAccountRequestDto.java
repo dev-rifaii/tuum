@@ -9,6 +9,6 @@ import java.util.List;
 public record CreateAccountRequestDto(
     @NotNull Long customerId,
     @NotBlank String countryCode,
-    List<@ValidCurrency String> currencies
+    List<@ValidCurrency @NotNull String> currencies
 ) {
 }

@@ -12,6 +12,9 @@ public class ValidCurrencyValidator implements ConstraintValidator<ValidCurrency
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
+        if (value == null)
+            return true;
+
         if (VALID_CURRENCIES.contains(value.toUpperCase()))
             return true;
 

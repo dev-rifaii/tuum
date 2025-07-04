@@ -16,9 +16,17 @@ an artifact will be present in build/libs with the name `tuum.jar`
 
 Run tests:
 
-```
+```shell
 ./gradlew test
 ```
+
+Check test coverage:
+
+```shell
+./gradlew jacocoTestReport
+```
+
+A report will be generated in build/reports/jacoco/test/html/index.html
 
 ## Run:
 
@@ -71,3 +79,13 @@ If the answer is no then I believe the application is ready to be horizontally s
   the advantage here is that if some consumer is only interested in listening to INSERT events then
   we can achieve it easily. Currently there's only 1 Queue bound to the exchange with a wildcard routing
   key data.change.#
+- I created a global exception handler that catches all exceptions, the reason behind it is to return
+  proper http status code depending on the Exception and the error, and to build an error object response
+  that is standarised.
+- Balance can be updated concurrently without any issues, because the change is being added into existing balance (balance = balance + change)
+  on database level, which gives the responsibility to postgres to handle different transactions updating same balance at once
+  this means as of now, no locking is needed on java code level.
+- For tests, an abstract base class was created from which every test class can extend from. This base class starts needed containers
+  and provides some utilities. The advantage is that the application context will be created only once which will result in fast tests.
+  In addition, containers will start only once when running all tests, side effects won't be an issue since the base test class is annotated
+  with @Transactional which rolls back all data changes in db at the end of the test
