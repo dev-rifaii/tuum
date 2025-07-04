@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="0" author="admin">
+        <sql>
+            CREATE SEQUENCE account_seq START WITH 10000;
+            CREATE TABLE account (
+                id BIGINT PRIMARY KEY NOT NULL DEFAULT nextval('account_seq'),
+                customer_id BIGINT NOT NULL,
+                country_code VARCHAR(2) NOT NULL
+            );
+
+            CREATE SEQUENCE balance_seq START WITH 10000;
+            CREATE TABLE balance (
+                id BIGINT PRIMARY KEY NOT NULL DEFAULT nextval('balance_seq'),
+                account_id BIGINT REFERENCES account (id) NOT NULL,
+                amount NUMERIC(16, 2) NOT NULL,
+                currency_code VARCHAR(3) NOT NULL
+            );
+
+            CREATE SEQUENCE transaction_seq START WITH 10000;
+            CREATE TABLE transaction (
+                id BIGINT PRIMARY KEY NOT NULL DEFAULT nextval('transaction_seq'),
+                account_id BIGINT REFERENCES account (id) NOT NULL,
+                amount NUMERIC(16, 2) NOT NULL CHECK ( amount > 0 ),
+                currency_code VARCHAR(3) NOT NULL,
+                direction VARCHAR(3) NOT NULL CHECK ( direction IN ('IN', 'OUT') ),
+                description TEXT NOT NULL
+            )
+        </sql>
+
+    </changeSet>
+</databaseChangeLog>

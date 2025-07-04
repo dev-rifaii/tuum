@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rifaii.tuum.account.AccountDao">
+
+    <select id="find" resultType="org.rifaii.tuum.account.Account">
+        SELECT * FROM account WHERE id = #{id};
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO account
+            (customer_id, country_code)
+        VALUES
+            (#{customerId}, #{countryCode});
+    </insert>
+
+    <resultMap id="accountWithBalances" type="org.rifaii.tuum.account.dto.AccountWithBalanceDto">
+        <id column="id" property="accountId"/>
+        <result column="customer_id" property="customerId"/>
+        <collection property="balances" ofType="org.rifaii.tuum.account.dto.AccountWithBalanceDto$BalanceDto" javaType="java.util.List">
+            <result column="amount" property="availableAmount"/>
+            <result column="currency_code" property="currencyCode"/>
+        </collection>
+    </resultMap>
+
+    <select id="findWithBalance" resultMap="accountWithBalances">
+        SELECT a.id, a.customer_id, b.amount, b.currency_code
+        FROM account a
+            JOIN balance b ON a.id = b.account_id
+        WHERE a.id = #{accountId};
+    </select>
+</mapper>

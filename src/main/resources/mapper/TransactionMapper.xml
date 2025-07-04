@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.rifaii.tuum.transaction.TransactionDao">
+
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO transaction
+            (account_id, amount, currency_code, direction, description)
+        VALUES
+            (#{accountId}, #{amount}, #{currencyCode}, #{direction}, #{description});
+    </insert>
+
+    <select id="find" resultType="org.rifaii.tuum.transaction.Transaction">
+        SELECT *
+        FROM transaction
+        WHERE account_id = #{accountId};
+    </select>
+</mapper>
