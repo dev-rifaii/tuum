@@ -39,6 +39,8 @@ class AccountApiTest extends ITestBase {
             .andExpect(jsonPath("$.balances[*].currencyCode", containsInAnyOrder("EUR", "USD")))
             .andExpect(jsonPath("$.balances[*].availableAmount", containsInAnyOrder(0, 0)))
         ;
+
+        assertChangesNotified(2);
     }
 
     @Test

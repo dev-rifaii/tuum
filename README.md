@@ -47,6 +47,8 @@ Another option is to run everything in docker, including the application
 docker compose -f docker-compose.yaml up -d
 ```
 
+Swagger is available on [/swagger-ui.html](http://localhost:8080/swagger-ui.html)
+
 ## Benchmark:
 
 On my machine, the application can handle around 300 requests per second on average.

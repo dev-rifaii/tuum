@@ -57,6 +57,7 @@ class TransactionApiTest extends ITestBase {
 
         Balance balanceAfterTransaction = balanceService.find(accountId, "EUR").get();
         assertEquals(new BigDecimal(expectedBalance), balanceAfterTransaction.getAmount());
+        assertChangesNotified(2);
     }
 
     @Test

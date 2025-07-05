@@ -3,10 +3,10 @@ package org.rifaii.tuum.transaction.dto;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import org.rifaii.tuum.validation.EnumValue;
-import org.rifaii.tuum.validation.ValidCurrency;
 import org.rifaii.tuum.transaction.Transaction;
 import org.rifaii.tuum.transaction.Transaction.Direction;
+import org.rifaii.tuum.validation.EnumValue;
+import org.rifaii.tuum.validation.ValidCurrency;
 
 import java.math.BigDecimal;
 

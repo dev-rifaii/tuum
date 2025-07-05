@@ -7,7 +7,7 @@ import org.springframework.test.context.jdbc.Sql;
 
 import java.math.BigDecimal;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class BalanceServiceTest extends ITestBase {
 
@@ -24,6 +24,7 @@ class BalanceServiceTest extends ITestBase {
         Balance balanceAfterChange = balanceService.find(accountId, currencyCode).orElseThrow();
 
         assertEquals(new BigDecimal("45.21"), balanceAfterChange.getAmount());
+        assertChangesNotified(1);
     }
 
 }
